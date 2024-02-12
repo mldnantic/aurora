@@ -578,7 +578,12 @@ function figureInput(body)
         });
     }
     figureInput.appendChild(deleteBodyBtn);
-    
+
+    let clrBtn = document.createElement("button");
+    clrBtn.innerHTML="Clear 3D view";
+    clrBtn.onclick=(ev)=>clearBuffer();
+    figureInput.appendChild(clrBtn);
+
     var label = document.createElement("label");
     label.setAttribute("for", "shapes");
     label.textContent = "Select figure:";
@@ -1308,12 +1313,6 @@ function drawCylinder(a,b,dense,cam_height,base_height,cam_distance)
 
 function drawTruncatedCone(a,b,h,dense,cam_height,base_height,cam_distance)
 {
-    if(a==0 || b==0 || h==0)
-    {
-        console.log("nepopunjene dimenzije");
-    }
-    else
-    {
         let theta = (Math.PI*2)/dense;
         let cosine = Math.cos(theta);
         let sine = Math.sin(theta);
@@ -1371,5 +1370,4 @@ function drawTruncatedCone(a,b,h,dense,cam_height,base_height,cam_distance)
             colorData.push(...modelColor());
         }
         webgl(gl.TRIANGLE_STRIP,false,cam_height,cam_distance,gl.BACK);
-    }
 }

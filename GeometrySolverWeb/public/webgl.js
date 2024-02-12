@@ -149,3 +149,9 @@ function webgl(glDrawMode,animacija,height,distance,cullDirection)
         animate();
     }
 }
+
+function clearBuffer()
+{
+    gl.clearColor(0.612, 0.929, 1.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+}
