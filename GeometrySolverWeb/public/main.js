@@ -212,6 +212,7 @@ function registerLoginForm()
 
     let btnRegister = document.createElement("button");
     btnRegister.innerHTML="Register";
+    btnRegister.className="tabBtn";
     btnRegister.onclick =async (ev) =>{
         
         if(usernameInput.value!="")
@@ -256,6 +257,7 @@ function registerLoginForm()
 
     let btnLogin = document.createElement("button");
     btnLogin.innerHTML="Login";
+    btnLogin.className="tabBtn";
     btnLogin.onclick = async (ev) =>{
         if(!usernameInput.value=="")
         {
