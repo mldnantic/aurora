@@ -885,6 +885,24 @@ function commentSection(bodyID)
     userInteraction.appendChild(commentList);    
 }
 
+function conePV(a,h)
+{
+    P = a*Math.PI*(a+Math.sqrt(a*a+h*h));
+    V = (1/3)*(a*a*Math.PI*h);
+}
+
+function cylinderPV(a,b)
+{
+    P = 2*Math.PI*a*a+2*a*Math.PI*b;
+    V = a*a*Math.PI*b;
+}
+
+function truncConePV(a,b,h)
+{
+    P = Math.PI*(b*b+a*a+b*Math.sqrt((a-b)*(a-b)+h*h));
+    V = (1/3)*Math.PI*h*(b*b+a*b+a*a);
+}
+
 async function drawModel(projectID)
 {
     let id = projectID;
@@ -905,20 +923,12 @@ async function drawModel(projectID)
                         case "triangle":
                             cam_height+=f.h;
                             cam_distance+=f.a;
-                            //calculate cone surface and volume: P = aπ(a+s), s = sqrt(a*a+h*h)
-                            P = f.a*Math.PI*(f.a+Math.sqrt(f.a*f.a+f.h*f.h));
-                            V = (1/3)*(f.a*f.a*Math.PI*f.h);
-                            // console.log(`Povrsina kupe je ${P}`);
-                            // console.log(`Zapremina kupe je ${V}`);
+                            conePV(f.a,f.h);
                             break;
                         case "rectangle":
                             cam_height+=f.b;
                             cam_distance+=f.a;
-                            //calculate cylinder surface and volume
-                            P = 2*Math.PI*f.a*f.a+2*f.a*Math.PI*f.b;
-                            V = f.a*f.a*Math.PI*f.b;
-                            // console.log(`Povrsina valjka je ${P}`);
-                            // console.log(`Zapremina valjka je ${V}`);
+                            cylinderPV(f.a,f.b);
                             break;
                         case "trapezoid":
                             cam_height+=f.h;
@@ -930,11 +940,7 @@ async function drawModel(projectID)
                             {
                                 cam_distance+=f.b;
                             }
-                            //calculate surface and volume
-                            P = Math.PI*(f.b*f.b+f.a*f.a+f.b*Math.sqrt((f.a-f.b)*(f.a-f.b)+f.h*f.h));
-                            V = (1/3)*Math.PI*f.h*(f.b*f.b+f.a*f.b+f.a*f.a);
-                            // console.log(`Povrsina zarubljene kupe je ${P}`);
-                            // console.log(`Zapremina zarubljene kupe je ${V}`);
+                            truncConePV(f.a,f.b,f.h);
                             break;
                     }
                 })
