@@ -166,7 +166,7 @@ socket.on("comment",comment=>{
 });
 
 socket.on("figureAdded",body=>{
-    drawModel(body.bodyID);
+    renderModel(body.bodyID);
 });
 
 function redraw(componentID,componentClassName)
@@ -431,7 +431,7 @@ async function modelCreateAndSelect()
                             bodyID = item._id;
                             length = item.length;
                             figureInput(bodyID);
-                            drawModel(bodyID);
+                            renderModel(bodyID);
                             socket.emit("openbody", bodyID);
                     
                             let BodySent = {
@@ -526,7 +526,7 @@ async function modelCreateAndSelect()
                 if(document.getElementById("figureInput")==null)
                 {
                     figureInput(data._id);
-                    drawModel(data._id);
+                    renderModel(data._id);
                     socket.emit("openbody",(data._id));
                 }
                 if(document.getElementById("userInteraction")==null)
@@ -732,12 +732,12 @@ function figureInput(body)
             inverted = false;
         }
 
-        if(aa==0 || be==0 || ha==0)
-        {
-            warningNotification("You have to input correct dimensions");
-        }
-        else
-        {
+        // if(aa==0 || be==0 || ha==0)
+        // {
+        //     warningNotification("You have to input correct dimensions");
+        // }
+        // else
+        // {
             var newFigure = {
                 a:aa,
                 b:be,
@@ -781,7 +781,7 @@ function figureInput(body)
                         .then(data => {
                                 length = data.length;
                                 console.log(length);
-                                drawModel(bodyID);
+                                renderModel(bodyID);
                                 socket.emit("figureAdded",telo);
                             })
                         .catch(error => {
@@ -790,7 +790,7 @@ function figureInput(body)
                     }
                 }
             })
-        }
+        // }
     };
     figureInput.appendChild(btnAddFigure);
 
@@ -905,7 +905,7 @@ function truncConePV(a,b,h)
     V = (1/3)*Math.PI*h*(b*b+a*b+a*a);
 }
 
-async function drawModel(projectID)
+async function renderModel(projectID)
 {
     let id = projectID;
     await fetch(`/getBody?id=${id}`)
@@ -915,7 +915,6 @@ async function drawModel(projectID)
             let cam_height = 0;
             let cam_distance = 0;
             let base_height = 0;
-            let normaldir = -1.0;
             let P;
             let V;
             data.figures.forEach(f=>
@@ -951,56 +950,50 @@ async function drawModel(projectID)
 
             cam_height = cam_height/2;
             cam_distance = cam_distance/2;
-            
+            prevRadius = 0.0;
             data.figures.forEach(f=>{
+            
             vertexData=[];
             colorData=[];
             normalData=[];
+
             switch(f.tip)
             {
                 case "triangle":
-                    //glitchuje kad se dodiruje sa omotacem bilo cega, treba drawTruncatedCone sa prosledjenim h=0.0
-                    // drawCircle(range_vrednost,f.a,-1.0,cam_height,base_height,cam_distance,gl.FRONT);
+                    drawTruncatedCone(prevRadius,f.a,0.0,range_vrednost,cam_height,base_height,cam_distance);
                     vertexData=[];
                     colorData=[];
                     normalData=[];
-                    normaldir = -normaldir;
                     drawCone(f.a,f.h,range_vrednost,cam_height,base_height,cam_distance);
                     drawShape("triangle",f.a,f.b,f.h,base_height*16);
                     base_height+=f.h;
+                    prevRadius=0.0;
                     break;
                 case "rectangle":
-                    // drawCircle(range_vrednost,f.a,normaldir,cam_height,base_height,cam_distance,gl.FRONT);
-                    //draw truncated cone instead, h is 0.0, take into account f-1.a - f.a
+                    drawTruncatedCone(prevRadius,f.a,0.0,range_vrednost,cam_height,base_height,cam_distance);
                     vertexData=[];
                     colorData=[];
                     normalData=[];
-                    normaldir = -normaldir;
                     drawCylinder(f.a,f.b,range_vrednost,cam_height,base_height,cam_distance);
                     drawShape("rectangle",f.a,f.b,f.h,base_height*16);
                     base_height+=f.b;
                     vertexData=[];
                     colorData=[];
                     normalData=[];
-                    // drawCircle(range_vrednost,f.a,normaldir,cam_height,base_height,cam_distance,gl.BACK);
-                    //same as above, draw truncated cone instead, h is 0.0, take into account f-1.a - f.a
-                    normaldir = -normaldir;
+                    prevRadius=f.a;
                     break;
                 case "trapezoid":
-                    // drawCircle(range_vrednost,f.a,normaldir,cam_height,base_height,cam_distance,gl.FRONT);
-                    //draw truncated cone instead, h is 0.0, take into account f-1.a - f.a
+                    drawTruncatedCone(prevRadius,f.a,0.0,range_vrednost,cam_height,base_height,cam_distance);
                     vertexData=[];
                     colorData=[];
                     normalData=[];
-                    normaldir = -normaldir;
                     drawTruncatedCone(f.a,f.b,f.h,range_vrednost,cam_height,base_height,cam_distance);
                     drawShape("trapezoid",f.a,f.b,f.h,base_height*16);
                     base_height+=f.h;
                     vertexData=[];
                     colorData=[];
                     normalData=[];
-                    // drawCircle(range_vrednost,f.b,normaldir,cam_height,base_height,cam_distance,gl.BACK);
-                    //draw truncated cone instead, h is 0.0, take into account f-1.a - f.a
+                    prevRadius=f.b;
                     break;
             }
             });
