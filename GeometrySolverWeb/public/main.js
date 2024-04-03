@@ -319,6 +319,7 @@ async function logOffAction()
             remove("figureInput");
             remove("userInteraction");
             clearPoprecni();
+            clearBuffer();
             registerLoginForm();
             // drawGrid(false);
         })
