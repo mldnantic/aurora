@@ -148,7 +148,6 @@ var colorData = [
 ];
 
 var normalData = [
-    //normalizovan vektor za svaku stranu 3D modela
 ];
 
 
