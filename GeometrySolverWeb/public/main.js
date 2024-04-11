@@ -403,7 +403,7 @@ async function removeWatcher()
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
+            warningNotification(data.message);
         })
         .catch(error => {
             console.error("Error registering user:", error);
