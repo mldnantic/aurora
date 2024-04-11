@@ -97,7 +97,6 @@ menu.id="menuDiv";
 glavniDiv.appendChild(menu);
 registerLoginForm();
 
-
 //TODO
 function menuDiv()
 {
@@ -150,6 +149,7 @@ var colorData = [
 var normalData = [
 ];
 
+drawGrid(false);
 
 socket.on("message", message =>{
     let notification = document.getElementById("notification");
@@ -260,8 +260,6 @@ function registerLoginForm()
     btnLogin.onclick = async (ev) =>{
         if(!usernameInput.value=="")
         {
-
-            let notification = document.getElementById("notification");
             await fetch(`/getUserByUsername?username=${usernameInput.value}`)
                 .then(response => response.json())
                 .then(data => {
@@ -271,11 +269,18 @@ function registerLoginForm()
                         userName = data.username;
                         okNotification(`Welcome ${userName}`);
                         redraw("registerLoginDiv","menuDiv");
+                        let buttonsDiv = document.createElement("div");
+
+                        let backBtn = document.createElement("button");
+                        backBtn.innerHTML = "Back";
+                        buttonsDiv.appendChild(backBtn);
                         let logoffBtn = document.createElement("button");
                         logoffBtn.innerHTML = "Log off";
-                        document.getElementById("registerLoginDiv").appendChild(logoffBtn);
+                        buttonsDiv.appendChild(logoffBtn);
+                        document.getElementById("registerLoginDiv").appendChild(buttonsDiv);
                         modelCreateAndSelect();
                         
+                        backBtn.onclick=(ev)=>goBackAction();
                         logoffBtn.onclick=(ev)=>logOffAction();
                     }
                     else
@@ -290,6 +295,22 @@ function registerLoginForm()
     }
     divTmp.appendChild(btnLogin);
     registerLoginDiv.appendChild(divTmp);
+}
+
+function goBackAction()
+{
+    if(bodyID!="")
+    {
+        removeWatcher();
+        bodyID="";
+        length=0;
+        remove("figureInput");
+        remove("userInteraction");
+        modelCreateAndSelect();
+        clearPoprecni();
+        clearBuffer();
+        drawGrid(false);
+    }
 }
 
 async function logOffAction()
@@ -321,7 +342,7 @@ async function logOffAction()
             clearPoprecni();
             clearBuffer();
             registerLoginForm();
-            // drawGrid(false);
+            drawGrid(false);
         })
         .catch(error => {
             console.error("Error registering user:", error);
@@ -573,7 +594,7 @@ function figureInput(body)
             remove("userInteraction");
             modelCreateAndSelect();
             clearPoprecni();
-            // drawGrid(false);
+            drawGrid(false);
         })
         .catch(error => {
             console.error("Error registering user:", error);
