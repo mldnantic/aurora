@@ -42,6 +42,7 @@ canvas
 textarea
 {
     color: gainsboro;
+    font-family: "Century Gothic";
     outline: none !important;
     flex:1 0;
     overflow-y: scroll;
@@ -73,6 +74,7 @@ input
     align-self: center;
     border-radius: 5px;
     border:1px solid rgb(90, 90, 95);
+    font-family: "Century Gothic";
 }
 
 button
