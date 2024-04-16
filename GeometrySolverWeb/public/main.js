@@ -12,7 +12,7 @@ notificationsDiv.id="notificationsDiv";
 host.appendChild(notificationsDiv);
 
 let naziv = document.createElement("h1");
-naziv.innerHTML="GeometrySolver";
+naziv.innerHTML="GeometrySolver "+`${window.devicePixelRatio}`;
 notificationsDiv.appendChild(naziv);
 
 let notification = document.createElement("div");
@@ -109,8 +109,8 @@ function canvasResize()
 
 }
 //ovo treba da se racuna na svaki resize web browser-a
-let height = canvas.offsetHeight;
-let width = canvas.offsetWidth;
+let height = canvas.offsetHeight*window.devicePixelRatio;
+let width = canvas.offsetWidth*window.devicePixelRatio;
 canvas.width = width;
 canvas.height = height;
 console.log(`Rezolucija prikaza je ${canvas.width}x${canvas.height}`);
