@@ -403,7 +403,6 @@ async function removeWatcher()
         })
         .then(response => response.json())
         .then(data => {
-            warningNotification(data.message);
         })
         .catch(error => {
             console.error("Error registering user:", error);
@@ -446,7 +445,11 @@ async function modelCreateAndSelect()
                 data.forEach(item =>{
                         let bodyOption = document.createElement("button");
                         bodyOption.className = "bodyDiv";
-                        bodyOption.innerHTML = item.projectname;
+                        fetch(`/getUserByID/${item.creatorID}`)
+                        .then(response=>response.json())
+                        .then(data=>{
+                            bodyOption.innerHTML = `${item.projectname} ${data.username}`;
+                        })
                         bodyOption.onclick = async (ev) =>{
 
                             bodyID = item._id;
