@@ -315,7 +315,6 @@ function goBackAction()
 
 async function logOffAction()
 {
-    console.log(bodyID);
     if(bodyID!="")
     {
         let watcher = 
