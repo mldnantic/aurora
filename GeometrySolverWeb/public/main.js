@@ -6,6 +6,8 @@ var length = 0;
 
 let host = document.body;
 
+//# HEADER APLIKACIJE
+{
 let notificationsDiv = document.createElement("div");
 notificationsDiv.className="notificationsDiv";
 notificationsDiv.id="notificationsDiv";
@@ -19,6 +21,7 @@ let notification = document.createElement("div");
 notification.className = "notification";
 notification.id = "notification";
 notificationsDiv.appendChild(notification);
+}
 
 let glavniDiv = document.createElement("div");
 glavniDiv.className="glavniDiv";
@@ -29,6 +32,8 @@ let canvas = document.createElement("canvas");
 canvas.id = "platno3D";
 glavniDiv.appendChild(canvas);
 
+//# 2D VIEW FUNKCIJE
+{
 function drawPoprecni()
 {
     let poprecni = document.createElement("canvas");
@@ -90,6 +95,7 @@ function clearPoprecni()
     ctx.fillText("X", platno2D.width-factorWidth + offset, platno2D.height-factorHeight);
 }
 clearPoprecni();
+}
 
 var menu = document.createElement("div");
 menu.className="menuDiv";
