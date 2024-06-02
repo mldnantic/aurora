@@ -14,7 +14,9 @@ notificationsDiv.id="notificationsDiv";
 host.appendChild(notificationsDiv);
 
 let naziv = document.createElement("h1");
-naziv.innerHTML="GeometrySolver "+`${window.devicePixelRatio}`;
+naziv.id = "header";
+// naziv.innerHTML="GeometrySolver "+`${window.devicePixelRatio}`;
+naziv.innerHTML=`Rezolucija prikaza je ${window.innerWidth}x${window.innerHeight}`;
 notificationsDiv.appendChild(naziv);
 
 let notification = document.createElement("div");
@@ -110,23 +112,36 @@ function menuDiv()
 }
 
 //TODO
-function canvasResize()
-{
 
-}
 //ovo treba da se racuna na svaki resize web browser-a
 let height = canvas.offsetHeight*window.devicePixelRatio;
 let width = canvas.offsetWidth*window.devicePixelRatio;
 canvas.width = width;
 canvas.height = height;
-console.log(`Rezolucija prikaza je ${canvas.width}x${canvas.height}`);
 
 canvas = document.querySelector("canvas");
-const gl = canvas.getContext('webgl');
+var gl = canvas.getContext('webgl');
 
 if(!gl)
 {
     throw new Error("WEBGL NOT SUPPORTED");
+}
+window.addEventListener("resize", function(e)
+{
+    canvasResize()
+})
+
+function canvasResize()
+{
+    canvas = document.querySelector("canvas");
+    gl = canvas.getContext('webgl');
+    
+    document.getElementById("header").innerHTML= `Rezolucija prikaza je ${window.innerWidth}x${window.innerHeight}`;
+    if(!gl)
+    {
+        throw new Error("WEBGL NOT SUPPORTED");
+    }
+    drawGrid(false);
 }
 
 //unloadovanje struktura za matrice jer drugacije ne radi
@@ -155,7 +170,7 @@ var colorData = [
 var normalData = [
 ];
 
-drawGrid(false);
+// drawGrid(false);
 
 socket.on("message", message =>{
     let notification = document.getElementById("notification");
@@ -610,10 +625,10 @@ function figureInput(body)
     }
     figureInput.appendChild(deleteBodyBtn);
 
-    let clrBtn = document.createElement("button");
-    clrBtn.innerHTML="Clear 3D view";
-    clrBtn.onclick=(ev)=>clearBuffer();
-    figureInput.appendChild(clrBtn);
+    // let clrBtn = document.createElement("button");
+    // clrBtn.innerHTML="Clear 3D view";
+    // clrBtn.onclick=(ev)=>clearBuffer();
+    // figureInput.appendChild(clrBtn);
 
     var label = document.createElement("label");
     label.setAttribute("for", "shapes");
