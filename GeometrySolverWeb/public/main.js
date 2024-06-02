@@ -47,7 +47,6 @@ function drawPoprecni()
     let width = poprecni.offsetWidth/2;
     poprecni.width = width*window.devicePixelRatio;
     poprecni.height = height*window.devicePixelRatio;
-    console.log(`Rezolucija prikaza je ${poprecni.width}x${poprecni.height}`);
 }
 drawPoprecni();
 
