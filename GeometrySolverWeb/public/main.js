@@ -110,9 +110,6 @@ function menuDiv()
 
 }
 
-//TODO
-
-//ovo treba da se racuna na svaki resize web browser-a
 let height = canvas.offsetHeight*window.devicePixelRatio;
 let width = canvas.offsetWidth*window.devicePixelRatio;
 canvas.width = width;
@@ -125,6 +122,7 @@ if(!gl)
 {
     throw new Error("WEBGL NOT SUPPORTED");
 }
+
 window.addEventListener("resize", function(e)
 {
     canvasResize()
@@ -140,7 +138,6 @@ function canvasResize()
     {
         throw new Error("WEBGL NOT SUPPORTED");
     }
-    drawGrid(false);
 }
 
 //unloadovanje struktura za matrice jer drugacije ne radi
@@ -169,7 +166,7 @@ var colorData = [
 var normalData = [
 ];
 
-// drawGrid(false);
+drawGrid(false);
 
 socket.on("message", message =>{
     let notification = document.getElementById("notification");
@@ -609,14 +606,20 @@ function figureInput(body)
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
-            bodyID="";
-            length=0;
-            remove("figureInput");
-            remove("userInteraction");
-            modelCreateAndSelect();
-            clearPoprecni();
-            drawGrid(false);
+            if(data.delSuccess=="true")
+            {
+                bodyID="";
+                length=0;
+                remove("figureInput");
+                remove("userInteraction");
+                modelCreateAndSelect();
+                clearPoprecni();
+                drawGrid(false);
+            }
+            if(data.delSuccess=="false")
+            {
+                errorNotification("Failed to delete project")
+            }
         })
         .catch(error => {
             console.error("Error registering user:", error);

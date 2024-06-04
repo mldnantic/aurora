@@ -147,12 +147,24 @@ app.post("/createBody", async(req,res)=>{
 
 app.delete("/deleteBody", async (req, res) => {
   try {
-    const result = await BodyRepository.deleteBody(req.body.id);
+    var deleter = req.body.userID;
+    var creator = await BodyRepository.getBodyById(req.body.id);
+    if(deleter==creator.creatorID)
+    {
+      const result = await BodyRepository.deleteBody(req.body.id);
+      // Remove bodyID from the user's myProjects array
+      await UserRepository.removeProject(req.body.userID, req.body.id);
+      res.json({
+        delSuccess:"true"
+      });
+    }
+    else
+    {
+      res.json({
+        delSuccess:"false"
+      })
+    }
 
-    // Remove bodyID from the user's myProjects array
-    await UserRepository.removeProject(req.body.userID, req.body.id);
-
-    res.json(result);
   } catch (error) {
     console.error('Error deleting body:', error);
     res.status(500).json({ error: 'Internal Server Error' });
