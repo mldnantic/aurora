@@ -156,7 +156,8 @@ button
     height: 50px;
     margin: 5px;
     background-color: gainsboro;
-    align-items: center;
+    align-items: start;
+    flex-direction: column;
 }
 
 .registerLoginDiv

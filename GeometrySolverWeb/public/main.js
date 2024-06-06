@@ -464,7 +464,16 @@ async function modelCreateAndSelect()
                         fetch(`/getUserByID/${item.creatorID}`)
                         .then(response=>response.json())
                         .then(data=>{
-                            bodyOption.innerHTML = `${item.projectname} ${data.username}`;
+                            let projectName = document.createElement("h3");
+                            projectName.innerHTML=`${item.projectname}`;
+                            projectName.style.margin=0;
+                            projectName.style.padding=0;
+                            bodyOption.appendChild(projectName);
+                            let userName = document.createElement("label");
+                            userName.innerHTML = `${data.username}`;
+                            userName.style.margin=0;
+                            userName.style.padding=0;
+                            bodyOption.appendChild(userName);
                         })
                         bodyOption.onclick = async (ev) =>{
 
