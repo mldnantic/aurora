@@ -279,6 +279,19 @@ function registerLoginForm()
                         userName = data.username;
                         okNotification(`Welcome ${userName}`);
                         redraw("registerLoginDiv","menuDiv");
+
+                        let tabsDiv = document.createElement("div");
+                        menu.appendChild(tabsDiv);
+                        let tabButton = document.createElement("button");
+                        tabButton.className = "tabBtn";
+                        tabButton.innerHTML = "My projects";
+                        tabsDiv.appendChild(tabButton);
+                        tabButton = document.createElement("button");
+                        tabButton.className = "tabBtn";
+                        tabButton.innerHTML = "Settings";
+                        tabsDiv.appendChild(tabButton);
+                        document.getElementById("registerLoginDiv").appendChild(tabsDiv);
+
                         let buttonsDiv = document.createElement("div");
 
                         let backBtn = document.createElement("button");
@@ -318,6 +331,7 @@ function goBackAction()
         modelCreateAndSelect();
         clearPoprecni();
         clearComments();
+        toggleCommenting();
         clearBuffer();
         drawGrid(false);
     }
@@ -355,6 +369,7 @@ async function logOffAction()
             clearPoprecni();
             clearBuffer();
             clearComments();
+            toggleCommenting();
             registerLoginForm();
             drawGrid(false);
         })
@@ -485,6 +500,7 @@ async function modelCreateAndSelect()
                                     document.getElementById("commentList").value+=cmt.user+" "+cmt.time+" "+cmt.content+"\n\n";
                                 }
                             )
+                            toggleCommenting();
                             let BodySent = {
                                 user: userID,
                                 body: bodyID
@@ -580,6 +596,8 @@ async function modelCreateAndSelect()
                     renderModel(data._id);
                     socket.emit("openbody",(data._id));
                 }
+                toggleCommenting();
+
             })
             .catch(error => {
                 console.error("Error registering user:", error);
@@ -621,6 +639,7 @@ function figureInput(body)
                 modelCreateAndSelect();
                 clearPoprecni();
                 clearComments();
+                toggleCommenting();
                 drawGrid(false);
             }
             if(data.delSuccess=="false")
@@ -874,6 +893,12 @@ function figureInput(body)
     };
 }
 
+function toggleCommenting()
+{
+    let komentar = document.getElementById("commentText");
+    komentar.disabled = !komentar.disabled;
+}
+
 function commentSection()
 {
     let userInteraction = document.createElement("div");
@@ -885,53 +910,52 @@ function commentSection()
     btnKomentar.innerHTML="Send";
     btnKomentar.onclick =async (ev) =>{
         let komentar = document.getElementById("commentText");
-        
-        if(komentar.value!="")
-        {
-            let comment = {
-                user: userName,
-                content: komentar.value,
-                bodyID: bodyID
-            }
-    
-            socket.emit("comment",comment);
-            
-            let sadrzaj = komentar.value;
-            komentar.value="";
-            komentar.focus();
-            var newCmt = {
-                id: bodyID,
-                user: userName,
-                content: sadrzaj
-            };
-            fetch("/addComment", {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(newCmt),
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-            })
-            .catch(error => {
-                console.error("Error registering user:", error);
-            });
-        }
-        else
-        {
-            notification.style.backgroundColor = "rgb(180, 138, 32)";
-            notification.innerHTML = "You cannot send empty comment";
-            setTimeout(resetNotification,2000);
-        }
 
+        if(bodyID=="")
+        {
+            errorNotification("Open a project to comment");
+        }
+        
+        if(komentar.value!="" && bodyID!="")
+            {
+                let comment = {
+                    user: userName,
+                    content: komentar.value,
+                    bodyID: bodyID
+                }
+        
+                socket.emit("comment",comment);
+                
+                let sadrzaj = komentar.value;
+                komentar.value="";
+                komentar.focus();
+                var newCmt = {
+                    id: bodyID,
+                    user: userName,
+                    content: sadrzaj
+                };
+                fetch("/addComment", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(newCmt),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(error => {
+                    console.error("Error registering user:", error);
+                });
+            }
     }
     userInteraction.appendChild(btnKomentar);
     
     var komentar = document.createElement("input");
     komentar.placeholder = "Type your comment here...";
     komentar.id = "commentText";
+    komentar.disabled = true;
     userInteraction.appendChild(komentar);
     
     var commentList = document.createElement("textarea");
