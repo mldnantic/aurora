@@ -103,12 +103,7 @@ menu.className="menuDiv";
 menu.id="menuDiv";
 glavniDiv.appendChild(menu);
 registerLoginForm();
-
-//TODO
-function menuDiv()
-{
-
-}
+commentSection();
 
 let height = canvas.offsetHeight*window.devicePixelRatio;
 let width = canvas.offsetWidth*window.devicePixelRatio;
@@ -322,7 +317,6 @@ function goBackAction()
         bodyID="";
         length=0;
         remove("figureInput");
-        remove("userInteraction");
         modelCreateAndSelect();
         clearPoprecni();
         clearBuffer();
@@ -354,11 +348,11 @@ async function logOffAction()
             length = 0;
             remove("registerLoginDiv");
             remove("figureInput");
-            remove("userInteraction");
             clearPoprecni();
             clearBuffer();
             registerLoginForm();
             drawGrid(false);
+            // document.getElementById("userinteracion")
         })
         .catch(error => {
             console.error("Error registering user:", error);
@@ -578,10 +572,10 @@ async function modelCreateAndSelect()
                     renderModel(data._id);
                     socket.emit("openbody",(data._id));
                 }
-                if(document.getElementById("userInteraction")==null)
-                {
-                    commentSection(data._id);
-                }
+                // if(document.getElementById("userInteraction")==null)
+                // {
+                //     commentSection(data._id);
+                // }
             })
             .catch(error => {
                 console.error("Error registering user:", error);
@@ -620,7 +614,6 @@ function figureInput(body)
                 bodyID="";
                 length=0;
                 remove("figureInput");
-                remove("userInteraction");
                 modelCreateAndSelect();
                 clearPoprecni();
                 drawGrid(false);
@@ -876,7 +869,7 @@ function figureInput(body)
     };
 }
 
-function commentSection(bodyID)
+function commentSection()
 {
     let userInteraction = document.createElement("div");
     userInteraction.className = "userInteraction";
@@ -1058,7 +1051,7 @@ async function renderModel(projectID)
             let listaKomentara = document.getElementById("commentList");
             if(listaKomentara==null)
             {
-                commentSection(projectID);
+                // commentSection(projectID);
                 listaKomentara = document.getElementById("commentList");
                 data.comments.forEach(cmt=>{
                         listaKomentara.value+=cmt.user+" "+cmt.time+" "+cmt.content+"\n\n";
@@ -1067,7 +1060,7 @@ async function renderModel(projectID)
             }
             if(document.getElementById("userInteraction")==null)
             {
-                commentSection(id);
+                // commentSection(id);
             }
             })
         .catch(error => {
