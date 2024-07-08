@@ -319,9 +319,15 @@ function goBackAction()
         remove("figureInput");
         modelCreateAndSelect();
         clearPoprecni();
+        clearComments();
         clearBuffer();
         drawGrid(false);
     }
+}
+
+function clearComments()
+{
+    document.getElementById("commentList").value="";
 }
 
 async function logOffAction()
@@ -350,9 +356,9 @@ async function logOffAction()
             remove("figureInput");
             clearPoprecni();
             clearBuffer();
+            clearComments();
             registerLoginForm();
             drawGrid(false);
-            // document.getElementById("userinteracion")
         })
         .catch(error => {
             console.error("Error registering user:", error);
@@ -476,7 +482,11 @@ async function modelCreateAndSelect()
                             figureInput(bodyID);
                             renderModel(bodyID);
                             socket.emit("openbody", bodyID);
-                    
+                            item.comments.forEach(cmt=>
+                                {
+                                    document.getElementById("commentList").value+=cmt.user+" "+cmt.time+" "+cmt.content+"\n\n";
+                                }
+                            )
                             let BodySent = {
                                 user: userID,
                                 body: bodyID
@@ -572,10 +582,6 @@ async function modelCreateAndSelect()
                     renderModel(data._id);
                     socket.emit("openbody",(data._id));
                 }
-                // if(document.getElementById("userInteraction")==null)
-                // {
-                //     commentSection(data._id);
-                // }
             })
             .catch(error => {
                 console.error("Error registering user:", error);
@@ -616,6 +622,7 @@ function figureInput(body)
                 remove("figureInput");
                 modelCreateAndSelect();
                 clearPoprecni();
+                clearComments();
                 drawGrid(false);
             }
             if(data.delSuccess=="false")
