@@ -150,7 +150,7 @@ button
     flex:1 0;
     flex-flow: column wrap;
     justify-content: space-evenly;
-    background-color: darkgray;
+    background-color: gainsboro;
 }
 
 .bodiesDiv
@@ -188,6 +188,8 @@ button
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
     background-color: gainsboro;
+    margin:0 2px;
+    padding:0;
 }
 
 .stiklirano
@@ -206,6 +208,12 @@ button
     margin-top: 4px;
     /* margin-bottom: 0%; */
 }
+
+.tabSelector
+{
+    justify-content: flex-start;
+}
+
 
 @media (hover:hover)
 {

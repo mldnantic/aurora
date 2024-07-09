@@ -278,9 +278,9 @@ function registerLoginForm()
                         userID = data._id;
                         userName = data.username;
                         okNotification(`Welcome ${userName}`);
-                        redraw("registerLoginDiv","menuDiv");
-
                         let tabsDiv = document.createElement("div");
+                        tabsDiv.className = "tabSelector";
+                        tabsDiv.id = "tabSelector";
                         menu.appendChild(tabsDiv);
                         let tabButton = document.createElement("button");
                         tabButton.className = "tabBtn";
@@ -290,7 +290,9 @@ function registerLoginForm()
                         tabButton.className = "tabBtn";
                         tabButton.innerHTML = "Settings";
                         tabsDiv.appendChild(tabButton);
-                        document.getElementById("registerLoginDiv").appendChild(tabsDiv);
+                        document.getElementById("menuDiv").appendChild(tabsDiv);
+                        redraw("registerLoginDiv","menuDiv");
+
 
                         let buttonsDiv = document.createElement("div");
 
@@ -366,6 +368,7 @@ async function logOffAction()
             length = 0;
             remove("registerLoginDiv");
             remove("figureInput");
+            remove("tabSelector");
             clearPoprecni();
             clearBuffer();
             clearComments();
@@ -380,6 +383,7 @@ async function logOffAction()
     else
     {
         remove("registerLoginDiv");
+        remove("tabSelector");
         remove("bodiesSelect");
         remove("newProjectDiv");
         registerLoginForm();
