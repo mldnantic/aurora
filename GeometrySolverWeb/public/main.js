@@ -563,8 +563,6 @@ async function modelCreateAndSelect()
             .then(response => response.json())
             .then(data => {
 
-                console.log(data);
-
                 bodyID = data._id;
 
                 let BodySent = {
@@ -580,9 +578,6 @@ async function modelCreateAndSelect()
                     body: JSON.stringify(BodySent),
                 })
                 .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    })
                 .catch(error => {
                     console.error('Error fetching data:', error);
                 });
@@ -852,7 +847,6 @@ function figureInput(body)
                         .then(response => response.json())
                         .then(data => {
                                 length = data.length;
-                                console.log(length);
                                 renderModel(bodyID);
                                 socket.emit("figureAdded",telo);
                             })
@@ -942,9 +936,6 @@ function commentSection()
                     body: JSON.stringify(newCmt),
                 })
                 .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                })
                 .catch(error => {
                     console.error("Error registering user:", error);
                 });
@@ -1259,7 +1250,7 @@ function drawCone(a,h,dense,cam_height,base_height,cam_distance)
 {
     if(a==0 || h==0)
     {
-        console.log("nepopunjene dimenzije");
+        warningNotification("nepopunjene dimenzije");
     }
     else
     {
@@ -1315,7 +1306,7 @@ function drawCylinder(a,b,dense,cam_height,base_height,cam_distance)
 {
     if(a==0 || b==0)
     {
-        console.log("nepopunjene dimenzije");
+        warningNotification("nepopunjene dimenzije");
     }
     else
     {
