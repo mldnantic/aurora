@@ -189,7 +189,8 @@ button
     border-bottom-right-radius: 0px;
     background-color: gainsboro;
     margin:0 2px;
-    padding:0;
+    height: 100%;
+    border: 1px solid black;
 }
 
 .stiklirano
@@ -212,6 +213,7 @@ button
 .tabSelector
 {
     justify-content: flex-start;
+    background-color: black;
 }
 
 
