@@ -14,7 +14,6 @@ const server = http.createServer(app);
 const io = socketio(server);
 const botName = "GeometrySolverBot";
 const port = 3000;
-var logUserSessions = false;
 
 mongoose.connect("mongodb://localhost:27017/GeometrySolver");
 
@@ -26,43 +25,21 @@ app.use(bodyParser.json());
 io.on("connection", socket =>{
 
   socket.emit("message",`${moment().format('LT')}: Welcome to GeometrySolver`);
-  
-  if(logUserSessions == true)
-  {
-    // io.emit("comment",`#${botName}#: "${socket.id} has entered comment section"`);
-    console.log(`"#${socket.id}# has entered comment section"`);
-  }
 
-  socket.on("openbody",(bodyID)=>
-  {
+  socket.on("openbody",(bodyID)=>{
     socket.join(bodyID);
-    // console.log(`User has opened project ${bodyID}`);
   })
 
   socket.on("comment",(comment)=>{
-
-      io.to(comment.bodyID).emit("comment",`${comment.user} ${moment().format('LT')} ${comment.content}`);
-        
-    });
-    
-  socket.on("figureAdded",(body)=>{
-    io.to(body.bodyID).emit("figureAdded",body);
-  });
-
-  socket.on("disconnect",()=>{
-    const user = socket.id;
-    if(user){
-        if(logUserSessions == true)
-        {
-          // io.emit("comment",`#${botName}#: "${user} has left comment section"`);
-          console.log(`"#${socket.id}# has left comment section"`)
-        }
-    }
+    io.to(comment.bodyID).emit("comment",`${comment.user} ${moment().format('LT')} ${comment.content}`);
   })
 
-});
+  socket.on("figureAdded",(body)=>{
+    io.to(body.bodyID).emit("figureAdded",body);
+  })
 
-//user crud
+})
+
 app.get('/getUserByUsername', async (req, res) => {
   try {
     const username = req.query;
@@ -95,8 +72,7 @@ app.get('/getUserById/:id', async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-
-//body crud
+//preuredi da vraca bodies by user tj "My projects"
 app.get('/getAllBodies', async (req, res) => {
   try {
     const bodies = await BodyRepository.getAllBodies();
@@ -117,7 +93,7 @@ app.get('/getBody', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
+//pesimistic lock, preuredi da bude optimistic lock
 app.get("/getWriteUser", async (req, res) => {
   try {
     const id = req.query.id;
@@ -152,19 +128,17 @@ app.delete("/deleteBody", async (req, res) => {
     if(deleter==creator.creatorID)
     {
       const result = await BodyRepository.deleteBody(req.body.id);
-      // Remove bodyID from the user's myProjects array
       await UserRepository.removeProject(req.body.userID, req.body.id);
       res.json({
-        delSuccess:"true"
+        deletionSuccess:"true"
       });
     }
     else
     {
       res.json({
-        delSuccess:"false"
+        deletionSuccess:"false"
       })
     }
-
   } catch (error) {
     console.error('Error deleting body:', error);
     res.status(500).json({ error: 'Internal Server Error' });

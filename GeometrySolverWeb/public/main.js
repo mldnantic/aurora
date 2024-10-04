@@ -630,7 +630,7 @@ function figureInput(body)
         })
         .then(response => response.json())
         .then(data => {
-            if(data.delSuccess=="true")
+            if(data.deletionSuccess=="true")
             {
                 bodyID="";
                 length=0;
@@ -641,7 +641,7 @@ function figureInput(body)
                 toggleCommenting();
                 drawGrid(false);
             }
-            if(data.delSuccess=="false")
+            if(data.deletionSuccess=="false")
             {
                 errorNotification("Failed to delete project")
             }
