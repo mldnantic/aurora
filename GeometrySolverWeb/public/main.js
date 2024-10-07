@@ -6,7 +6,6 @@ var length = 0;
 
 let host = document.body;
 
-//# HEADER APLIKACIJE
 {
 let notificationsDiv = document.createElement("div");
 notificationsDiv.className="notificationsDiv";
@@ -34,7 +33,6 @@ let canvas = document.createElement("canvas");
 canvas.id = "platno3D";
 glavniDiv.appendChild(canvas);
 
-//# 2D VIEW FUNKCIJE
 {
 function drawPoprecni()
 {
@@ -79,7 +77,6 @@ function clearPoprecni()
         ctx.stroke();
     }
 
-    //Y-osa
     ctx.strokeStyle = "#00ff00";
     ctx.beginPath();
     ctx.moveTo(platno2D.width/2, platno2D.height / density);
@@ -87,7 +84,6 @@ function clearPoprecni()
     ctx.stroke();
     ctx.fillText("Y", platno2D.width/2, platno2D.height / density - offset);
 
-    //X-osa
     ctx.strokeStyle = "#ff0000";
     ctx.beginPath();
     ctx.moveTo(platno2D.width/2, platno2D.height-factorHeight);
@@ -652,11 +648,6 @@ function figureInput(body)
     }
     figureInput.appendChild(deleteBodyBtn);
 
-    // let clrBtn = document.createElement("button");
-    // clrBtn.innerHTML="Clear 3D view";
-    // clrBtn.onclick=(ev)=>clearBuffer();
-    // figureInput.appendChild(clrBtn);
-
     var label = document.createElement("label");
     label.setAttribute("for", "shapes");
     label.textContent = "Select figure:";
@@ -803,12 +794,6 @@ function figureInput(body)
             inverted = false;
         }
 
-        // if(aa==0 || be==0 || ha==0)
-        // {
-        //     warningNotification("You have to input correct dimensions");
-        // }
-        // else
-        // {
             var newFigure = {
                 a:aa,
                 b:be,
@@ -860,7 +845,6 @@ function figureInput(body)
                     }
                 }
             })
-        // }
     };
     figureInput.appendChild(btnAddFigure);
 
@@ -1075,16 +1059,11 @@ async function renderModel(projectID)
             let listaKomentara = document.getElementById("commentList");
             if(listaKomentara==null)
             {
-                // commentSection(projectID);
                 listaKomentara = document.getElementById("commentList");
                 data.comments.forEach(cmt=>{
                         listaKomentara.value+=cmt.user+" "+cmt.time+" "+cmt.content+"\n\n";
                         listaKomentara.scrollTop = listaKomentara.scrollHeight;
                     });
-            }
-            if(document.getElementById("userInteraction")==null)
-            {
-                // commentSection(id);
             }
             })
         .catch(error => {
@@ -1218,7 +1197,6 @@ function drawGrid(rotating)
         }
     webgl(gl.LINES,rotating,1.0,1.0,gl.BACK);
 }
-// drawGrid(false);
 
 function drawCircle(dense,r,normalDir,camheight,height,cam_distance,cullDir)
 {
