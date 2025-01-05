@@ -38,6 +38,10 @@ io.on("connection", socket =>{
     io.to(body.bodyID).emit("figureAdded",body);
   })
 
+  socket.on("figureDeleted",(bodyID)=>{
+    io.to(bodyID).emit("figureDeleted",bodyID);
+  })
+
 })
 
 app.get('/getUserByUsername', async (req, res) => {
@@ -176,7 +180,22 @@ app.put("/addFigure", async(req,res)=>{
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-//deleteFigure
+
+app.put("/deleteTopFigure", async(req,res)=>{
+  try{
+    const bodyID = req.query.id;
+    const fig = await BodyRepository.deleteFigure(bodyID);
+    const duzina =
+    {
+      length: fig.length
+    }
+    res.json(duzina);
+  }
+  catch (error) {
+    console.error('Error deleting top figure:', error);
+    res.status(500).json({error: 'Internal Server Error'});
+  }
+})
 
 app.put("/addWatcher", async(req,res)=>{
   try{

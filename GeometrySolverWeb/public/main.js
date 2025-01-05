@@ -14,8 +14,8 @@ host.appendChild(notificationsDiv);
 
 let naziv = document.createElement("h1");
 naziv.id = "header";
-// naziv.innerHTML="GeometrySolver "+`${window.devicePixelRatio}`;
-naziv.innerHTML=`Rezolucija prikaza je ${window.innerWidth}x${window.innerHeight}`;
+naziv.innerHTML="GeometrySolver";
+// naziv.innerHTML=`${window.devicePixelRatio} DPR Rezolucija prikaza ${window.innerWidth}x${window.innerHeight}`;
 notificationsDiv.appendChild(naziv);
 
 let notification = document.createElement("div");
@@ -757,6 +757,8 @@ function figureInput(body)
     range.value=192;
     figureInput.appendChild(range);
     
+    divTmp = document.createElement("div");
+    
     let btnAddFigure = document.createElement("button");
     btnAddFigure.innerHTML = "Insert figure";
     btnAddFigure.onclick = async (ev) => {
@@ -846,7 +848,42 @@ function figureInput(body)
                 }
             })
     };
-    figureInput.appendChild(btnAddFigure);
+
+    divTmp.appendChild(btnAddFigure);
+
+    let btnDeleteTopFigure = document.createElement("button");
+    btnDeleteTopFigure.innerHTML = "Delete top figure";
+    btnDeleteTopFigure.onclick = async (ev) => {
+        await fetch(`/deleteTopFigure?id=${bodyID}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+            .then(response=>response.json())
+            .then(data=>{
+                        fetch(`/getBody?id=${bodyID}`, {
+                            method: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                                length = data.length;
+                                renderModel(bodyID);
+                                socket.emit("figureDeleted",bodyID);
+                            })
+                        .catch(error => {
+                            console.error('Error fetching data:', error);
+                        });
+                    }
+                )
+    }
+
+    divTmp.appendChild(btnDeleteTopFigure);
+
+    figureInput.appendChild(divTmp);
 
     var select = document.getElementById("shapes");
     select.onchange = (ev) => {
