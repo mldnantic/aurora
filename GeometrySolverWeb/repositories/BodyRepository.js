@@ -19,7 +19,6 @@ class BodyRepository
     }
   }
 
-  //update project name, figures list
   async addComment(id, comment)
   {
     try
@@ -115,7 +114,7 @@ class BodyRepository
     {
       const filter = {_id: id};
       const update = { $pop: { figures: 1 } };
-      await BodyModel.updateOne(filter, {$dec: {length:1}})
+      await BodyModel.updateOne(filter, {$inc: {length:-1}})
       const result = await BodyModel.updateOne(filter, update);
       const duzina = await BodyModel.findById(id);
 
