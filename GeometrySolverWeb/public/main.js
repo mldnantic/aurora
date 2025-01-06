@@ -3,10 +3,12 @@ var userID = "";
 var userName = "";
 var bodyID = "";
 var length = 0;
+var dragging = false;
+var lastX, lastY;
+var zoom = 1;
 
 let host = document.body;
 
-{
 let notificationsDiv = document.createElement("div");
 notificationsDiv.className="notificationsDiv";
 notificationsDiv.id="notificationsDiv";
@@ -22,7 +24,6 @@ let notification = document.createElement("div");
 notification.className = "notification";
 notification.id = "notification";
 notificationsDiv.appendChild(notification);
-}
 
 let glavniDiv = document.createElement("div");
 glavniDiv.className="glavniDiv";
@@ -58,22 +59,62 @@ if(!gl)
     throw new Error("WEBGL NOT SUPPORTED");
 }
 
-window.addEventListener("resize", function(e)
-{
-    canvasResize()
-})
+canvas.addEventListener('mousedown', (event) => {
+    dragging = true;
+    lastX = event.clientX;
+    lastY = event.clientY;
+});
 
-function canvasResize()
-{
-    canvas = document.querySelector("canvas");
-    gl = canvas.getContext('webgl');
-    
-    document.getElementById("header").innerHTML= `Rezolucija prikaza je ${window.innerWidth}x${window.innerHeight}`;
-    if(!gl)
-    {
-        throw new Error("WEBGL NOT SUPPORTED");
+canvas.addEventListener('mouseup', () => {
+    dragging = false;
+});
+
+canvas.addEventListener('mousemove', (event) => {
+    if (dragging) {
+        const dx = event.clientX - lastX;
+        const dy = event.clientY - lastY;
+        // Update the camera rotation or object rotation based on dx, dy
+        lastX = event.clientX;
+        lastY = event.clientY;
     }
-}
+});
+
+canvas.addEventListener('wheel', (event) => {
+    zoom += event.deltaY * -0.01;
+    zoom = Math.min(Math.max(-20, zoom), 20);
+    if(bodyID=="")
+    {
+        drawGrid(false);
+    }
+    else
+    {
+        if(length==0)
+        {
+            drawGrid(false);
+        }
+        else
+        {
+            renderModel(bodyID);
+        }
+    }
+});
+
+// window.addEventListener("resize", function(e)
+// {
+//     canvasResize()
+// })
+
+// function canvasResize()
+// {
+//     canvas = document.querySelector("canvas");
+//     gl = canvas.getContext('webgl');
+    
+//     document.getElementById("header").innerHTML= `Rezolucija prikaza je ${window.innerWidth}x${window.innerHeight}`;
+//     if(!gl)
+//     {
+//         throw new Error("WEBGL NOT SUPPORTED");
+//     }
+// }
 
 //unloadovanje struktura za matrice jer drugacije ne radi
 const { mat2, mat2d, mat3, mat4, quat, quat2, vec2, vec3, vec4 } = glMatrix;
@@ -1195,7 +1236,7 @@ function drawGrid(rotating)
             normalData.push(...[0.0,1.0,0.0]);
             normalData.push(...[0.0,1.0,0.0]);
         }
-    webgl(gl.LINES,rotating,1.0,1.0,gl.BACK);
+    webgl(gl.LINES,rotating,1.0,1.0+zoom,gl.BACK);
 }
 
 function drawCircle(dense,r,normalDir,camheight,height,cam_distance,cullDir)
@@ -1225,7 +1266,7 @@ function drawCircle(dense,r,normalDir,camheight,height,cam_distance,cullDir)
         normalData.push(...[0.0,normalDir,0.0]);
         normalData.push(...[0.0,normalDir,0.0]);
     }
-    webgl(gl.TRIANGLE_FAN,false,camheight,cam_distance,cullDir);
+    webgl(gl.TRIANGLE_FAN,false,camheight,cam_distance+zoom,cullDir);
 }
 
 function drawCone(a,h,dense,cam_height,base_height,cam_distance)
@@ -1279,7 +1320,7 @@ function drawCone(a,h,dense,cam_height,base_height,cam_distance)
             normalData.push(...normalVector);
 
         }
-        webgl(gl.TRIANGLES,false,cam_height,cam_distance,gl.BACK);
+        webgl(gl.TRIANGLES,false,cam_height,cam_distance+zoom,gl.BACK);
     }
         
 }
@@ -1358,7 +1399,7 @@ function drawCylinder(a,b,dense,cam_height,base_height,cam_distance)
             vertexData.push(...wrapVertexBottom);
             colorData.push(...modelColor());
         }
-        webgl(gl.TRIANGLE_STRIP,false,cam_height,cam_distance,gl.BACK);
+        webgl(gl.TRIANGLE_STRIP,false,cam_height,cam_distance+zoom,gl.BACK);
     }
 }
 
@@ -1420,5 +1461,5 @@ function drawTruncatedCone(a,b,h,dense,cam_height,base_height,cam_distance)
             vertexData.push(...wrapVertexOuter);
             colorData.push(...modelColor());
         }
-        webgl(gl.TRIANGLE_STRIP,false,cam_height,cam_distance,gl.BACK);
+        webgl(gl.TRIANGLE_STRIP,false,cam_height,cam_distance+zoom,gl.BACK);
 }

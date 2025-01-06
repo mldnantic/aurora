@@ -1,4 +1,4 @@
-function webgl(glDrawMode,animacija,height,distance,cullDirection)
+function webgl(glDrawMode, animacija, height, distance, cullDirection)
 {
     const positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
