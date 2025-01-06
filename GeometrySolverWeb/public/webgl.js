@@ -1,4 +1,4 @@
-function webgl(glDrawMode, animacija, height, distance, cullDirection)
+function webgl(glDrawMode, animacija, height, distance, cullDirection, rotateY)
 {
     const positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
@@ -101,7 +101,7 @@ function webgl(glDrawMode, animacija, height, distance, cullDirection)
     const mvpMatrix = mat4.create();
 
 
-    
+    mat4.rotateY(modelMatrix, modelMatrix, rotateY);
     mat4.translate(viewMatrix,viewMatrix,[0.0,1.0+height,8.0+distance]);
     mat4.invert(viewMatrix,viewMatrix);
 
