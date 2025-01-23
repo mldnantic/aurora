@@ -72,14 +72,12 @@ canvas.addEventListener('mouseup', () => {
 
 canvas.addEventListener('mousemove', (event) => {
     if (dragging) {
-        // console.clear();
         const dx = event.clientX - lastX;
         const dy = event.clientY - lastY;
         lastX = event.clientX;
         lastY = event.clientY;
         angleX += dx * (Math.PI/180);
         angleY -= dy * (Math.PI/180);
-        // clearBuffer();
         if(bodyID=="")
         {
             drawGrid(false);
