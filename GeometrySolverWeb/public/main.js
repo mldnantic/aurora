@@ -77,12 +77,23 @@ canvas.addEventListener('mousemove', (event) => {
         const dy = event.clientY - lastY;
         lastX = event.clientX;
         lastY = event.clientY;
-        angleX = Math.PI/180 * lastX;
-        angleY = Math.PI/180 * lastY;
-        clearBuffer();
+        angleX += dx * (Math.PI/180);
+        angleY -= dy * (Math.PI/180);
+        // clearBuffer();
         if(bodyID=="")
         {
             drawGrid(false);
+        }
+        else
+        {
+            if(length==0)
+            {
+                drawGrid(false);
+            }
+            else
+            {
+                renderModel(bodyID);
+            }
         }
     }
 });
