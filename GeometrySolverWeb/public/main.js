@@ -78,7 +78,7 @@ canvas.addEventListener('mousemove', (event) => {
         lastX = event.clientX;
         lastY = event.clientY;
         angleX = Math.PI/180 * lastX;
-        // console.log(lastY);
+        angleY = Math.PI/180 * lastY;
         clearBuffer();
         if(bodyID=="")
         {
@@ -88,8 +88,8 @@ canvas.addEventListener('mousemove', (event) => {
 });
 
 canvas.addEventListener('wheel', (event) => {
-    zoom += event.deltaY * -0.01;
-    zoom = Math.min(Math.max(-20, zoom), 20);
+    zoom -= event.deltaY * -0.01;
+    zoom = Math.min(Math.max(-4, zoom), 16);
     if(bodyID=="")
     {
         drawGrid(false);
@@ -1244,7 +1244,7 @@ function drawGrid(rotating)
             normalData.push(...[0.0,1.0,0.0]);
             normalData.push(...[0.0,1.0,0.0]);
         }
-    webgl(gl.LINES,rotating,1.0,1.0+zoom,gl.BACK,angleX);
+    webgl(gl.LINES,rotating,1.0+zoom/8,1.0+zoom,gl.BACK,angleX,angleY);
 }
 
 function drawCircle(dense,r,normalDir,camheight,height,cam_distance,cullDir)
@@ -1274,7 +1274,7 @@ function drawCircle(dense,r,normalDir,camheight,height,cam_distance,cullDir)
         normalData.push(...[0.0,normalDir,0.0]);
         normalData.push(...[0.0,normalDir,0.0]);
     }
-    webgl(gl.TRIANGLE_FAN,false,camheight,cam_distance+zoom,cullDir,angleX);
+    webgl(gl.TRIANGLE_FAN,false,camheight+zoom/8,cam_distance+zoom,cullDir,angleX,angleY);
 }
 
 function drawCone(a,h,dense,cam_height,base_height,cam_distance)
@@ -1328,7 +1328,7 @@ function drawCone(a,h,dense,cam_height,base_height,cam_distance)
             normalData.push(...normalVector);
 
         }
-        webgl(gl.TRIANGLES,false,cam_height,cam_distance+zoom,gl.BACK,angleX);
+        webgl(gl.TRIANGLES,false,cam_height+zoom/8,cam_distance+zoom,gl.BACK,angleX,angleY);
     }
         
 }
@@ -1407,7 +1407,7 @@ function drawCylinder(a,b,dense,cam_height,base_height,cam_distance)
             vertexData.push(...wrapVertexBottom);
             colorData.push(...modelColor());
         }
-        webgl(gl.TRIANGLE_STRIP,false,cam_height,cam_distance+zoom,gl.BACK,angleX);
+        webgl(gl.TRIANGLE_STRIP,false,cam_height+zoom/8,cam_distance+zoom,gl.BACK,angleX,angleY);
     }
 }
 
@@ -1469,5 +1469,5 @@ function drawTruncatedCone(a,b,h,dense,cam_height,base_height,cam_distance)
             vertexData.push(...wrapVertexOuter);
             colorData.push(...modelColor());
         }
-        webgl(gl.TRIANGLE_STRIP,false,cam_height,cam_distance+zoom,gl.BACK,angleX);
+        webgl(gl.TRIANGLE_STRIP,false,cam_height+zoom/8,cam_distance+zoom,gl.BACK,angleX,angleY);
 }
