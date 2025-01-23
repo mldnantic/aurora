@@ -1029,6 +1029,7 @@ async function renderModel(projectID)
             let cam_height = 0;
             let cam_distance = 0;
             let base_height = 0;
+            let figureIndex = 0;
             let P;
             let V;
             data.figures.forEach(f=>
@@ -1067,6 +1068,8 @@ async function renderModel(projectID)
             prevRadius = 0.0;
             data.figures.forEach(f=>{
             
+            figureIndex++;
+            
             vertexData=[];
             colorData=[];
             normalData=[];
@@ -1095,6 +1098,10 @@ async function renderModel(projectID)
                     colorData=[];
                     normalData=[];
                     prevRadius=f.a;
+                    if(figureIndex == data.length)
+                    {
+                        drawCircle(f.a,range_vrednost,1.0,cam_height,base_height,cam_distance);
+                    }
                     break;
                 case "trapezoid":
                     drawTruncatedCone(prevRadius,f.a,0.0,range_vrednost,cam_height,base_height,cam_distance);
@@ -1108,10 +1115,13 @@ async function renderModel(projectID)
                     colorData=[];
                     normalData=[];
                     prevRadius=f.b;
+                    if(figureIndex == data.length)
+                    {
+                        drawCircle(f.b,range_vrednost,1.0,cam_height,base_height,cam_distance);
+                    }
                     break;
             }
             });
-            
             //sum of surface and volumes is shown
 
             let listaKomentara = document.getElementById("commentList");
@@ -1256,7 +1266,7 @@ function drawGrid(rotating)
     webgl(gl.LINES,rotating,1.0+zoom/8,1.0+zoom,gl.BACK,angleX,angleY);
 }
 
-function drawCircle(dense,r,normalDir,camheight,height,cam_distance,cullDir)
+function drawCircle(r,dense,normalDir,camheight,height,cam_distance)
 {
     let density = dense;
     let size = r;
@@ -1283,7 +1293,7 @@ function drawCircle(dense,r,normalDir,camheight,height,cam_distance,cullDir)
         normalData.push(...[0.0,normalDir,0.0]);
         normalData.push(...[0.0,normalDir,0.0]);
     }
-    webgl(gl.TRIANGLE_FAN,false,camheight+zoom/8,cam_distance+zoom,cullDir,angleX,angleY);
+    webgl(gl.TRIANGLE_FAN,false,camheight+zoom/8,cam_distance+zoom,gl.BACK,angleX,angleY);
 }
 
 function drawCone(a,h,dense,cam_height,base_height,cam_distance)
