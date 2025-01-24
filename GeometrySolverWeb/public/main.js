@@ -7,8 +7,8 @@ var dragging = false;
 var lastX, lastY;
 var zoom = 1;
 var angleX = 0, angleY = 0;
-var P=0;
-var V=0;
+var P = 0;
+var V = 0;
 
 let host = document.body;
 
@@ -138,28 +138,11 @@ canvas.addEventListener('wheel', (event) => {
 //unloadovanje struktura za matrice jer drugacije ne radi
 const { mat2, mat2d, mat3, mat4, quat, quat2, vec2, vec3, vec4 } = glMatrix;
 
-var vertexData= [
-    //koordinatne ose
-	// 1.0, 0.0, 0.0,
-	// 0.0, 0.0, 0.0,
-	// 0.0, 1.0, 0.0,
-	// 0.0, 0.0, 0.0,
-	// 0.0, 0.0, 1.0,
-    // 0.0, 0.0, 0.0
-];
+var vertexData= [];
 
-var colorData = [
-    //boje x,y,z ose
-    // 1.0, 0.0, 0.0,
-    // 1.0, 0.0, 0.0,
-    // 0.0, 1.0, 0.0,
-    // 0.0, 1.0, 0.0,
-    // 0.0, 0.0, 1.0,
-    // 0.0, 0.0, 1.0,
-];
+var colorData = [];
 
-var normalData = [
-];
+var normalData = [];
 
 drawGrid(false);
 
@@ -773,6 +756,7 @@ function figureInput(body)
     figureInput.appendChild(range);
     
     let pvLbl = document.createElement("label");
+    pvLbl.id = "PV";
     pvLbl.innerHTML = `P: ${P} V: ${V}`;
     figureInput.appendChild(pvLbl);
 
@@ -1009,20 +993,20 @@ function commentSection()
 
 function conePV(a,h)
 {
-    P = a*Math.PI*(a+Math.sqrt(a*a+h*h));
-    V = (1/3)*(a*a*Math.PI*h);
+    P += a*Math.PI*(a+Math.sqrt(a*a+h*h));
+    V += (1/3)*(a*a*Math.PI*h);
 }
 
 function cylinderPV(a,b)
 {
-    P = 2*Math.PI*a*a+2*a*Math.PI*b;
-    V = a*a*Math.PI*b;
+    P += 2*Math.PI*a*a+2*a*Math.PI*b;
+    V += a*a*Math.PI*b;
 }
 
 function truncConePV(a,b,h)
 {
-    P = Math.PI*(b*b+a*a+b*Math.sqrt((a-b)*(a-b)+h*h));
-    V = (1/3)*Math.PI*h*(b*b+a*b+a*a);
+    P += Math.PI*(b*b+a*a+b*Math.sqrt((a-b)*(a-b)+h*h));
+    V += (1/3)*Math.PI*h*(b*b+a*b+a*a);
 }
 
 async function renderModel(projectID)
@@ -1037,6 +1021,10 @@ async function renderModel(projectID)
             let base_height = 0;
             let figureIndex = 0;
 
+            P = 0;
+            V = 0;
+            document.getElementById("PV").innerHTML = `P: ${P} V: ${V}`;
+
             data.figures.forEach(f=>
                 {
                     switch(f.tip)
@@ -1045,15 +1033,11 @@ async function renderModel(projectID)
                             cam_height+=f.h;
                             cam_distance+=f.a;
                             conePV(f.a,f.h);
-                            console.log(P);
-                            console.log(V);
                             break;
                         case "rectangle":
                             cam_height+=f.b;
                             cam_distance+=f.a;
                             cylinderPV(f.a,f.b);
-                            console.log(P);
-                            console.log(V);
                             break;
                         case "trapezoid":
                             cam_height+=f.h;
@@ -1066,13 +1050,13 @@ async function renderModel(projectID)
                                 cam_distance+=f.b;
                             }
                             truncConePV(f.a,f.b,f.h);
-                            console.log(P);
-                            console.log(V);
                             break;
                     }
                 })
 
             clearPoprecni();
+            
+            document.getElementById("PV").innerHTML = `P: ${P} V: ${V}`;
 
             cam_height = cam_height/2;
             cam_distance = cam_distance/2;
