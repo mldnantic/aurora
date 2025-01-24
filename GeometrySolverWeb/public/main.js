@@ -7,6 +7,8 @@ var dragging = false;
 var lastX, lastY;
 var zoom = 1;
 var angleX = 0, angleY = 0;
+var P=0;
+var V=0;
 
 let host = document.body;
 
@@ -770,6 +772,10 @@ function figureInput(body)
     range.value=192;
     figureInput.appendChild(range);
     
+    let pvLbl = document.createElement("label");
+    pvLbl.innerHTML = `P: ${P} V: ${V}`;
+    figureInput.appendChild(pvLbl);
+
     divTmp = document.createElement("div");
     
     let btnAddFigure = document.createElement("button");
@@ -1030,8 +1036,7 @@ async function renderModel(projectID)
             let cam_distance = 0;
             let base_height = 0;
             let figureIndex = 0;
-            let P;
-            let V;
+
             data.figures.forEach(f=>
                 {
                     switch(f.tip)
@@ -1040,11 +1045,15 @@ async function renderModel(projectID)
                             cam_height+=f.h;
                             cam_distance+=f.a;
                             conePV(f.a,f.h);
+                            console.log(P);
+                            console.log(V);
                             break;
                         case "rectangle":
                             cam_height+=f.b;
                             cam_distance+=f.a;
                             cylinderPV(f.a,f.b);
+                            console.log(P);
+                            console.log(V);
                             break;
                         case "trapezoid":
                             cam_height+=f.h;
@@ -1057,6 +1066,8 @@ async function renderModel(projectID)
                                 cam_distance+=f.b;
                             }
                             truncConePV(f.a,f.b,f.h);
+                            console.log(P);
+                            console.log(V);
                             break;
                     }
                 })
