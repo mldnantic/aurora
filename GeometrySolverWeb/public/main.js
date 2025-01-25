@@ -1015,7 +1015,7 @@ async function renderModel(projectID)
     await fetch(`/getBody?id=${id}`)
         .then(response => response.json())
         .then(data => {
-            let range_vrednost = 192;
+            let range_vrednost = 24;
             let cam_height = 0;
             let cam_distance = 0;
             let base_height = 0;
