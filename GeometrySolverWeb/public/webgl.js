@@ -119,16 +119,8 @@ function webgl(glDrawMode, animacija, height, distance, cullDirection, rotateY, 
         requestAnimationFrame(animate);
     }
 
-    // mat4.rotateX(modelMatrix, modelMatrix, Math.PI/2);
     if(!animacija)
     {
-        //pravi probleme
-        // if(clearBuffer)
-        // {
-        //     gl.clearColor(0.612, 0.929, 1.0, 1.0);
-        //     gl.clear(gl.COLOR_BUFFER_BIT);
-        // }
-
         mat4.multiply(mvMatrix,viewMatrix,modelMatrix);
         mat4.multiply(mvpMatrix,projectionMatrix,mvMatrix);
 
