@@ -1056,6 +1056,7 @@ async function renderModel(projectID)
 
             clearPoprecni();
             
+            //sum of surface and volumes is shown
             document.getElementById("PV").innerHTML = `P: ${P} V: ${V}`;
 
             cam_height = cam_height/2;
@@ -1117,7 +1118,6 @@ async function renderModel(projectID)
                     break;
             }
             });
-            //sum of surface and volumes is shown
 
             let listaKomentara = document.getElementById("commentList");
             if(listaKomentara==null)
