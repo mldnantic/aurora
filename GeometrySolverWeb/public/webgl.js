@@ -14,58 +14,36 @@ function webgl(glDrawMode, animacija, height, distance, cullDirection, rotateY, 
 
     const vertexShader = gl.createShader(gl.VERTEX_SHADER);
     gl.shaderSource(vertexShader, `
-precision mediump float;
-
-const vec3 lightDirection = normalize(vec3(1.0, 1.0, 1.0));
-const vec3 viewDirection = normalize(vec3(0.0, 0.0, 1.0));  // assuming the camera is at (0,0,1)
-const float ambient = 0.2;
-
-attribute vec3 position;
-attribute vec3 normal;
-attribute vec3 color;
-varying vec3 vColor;
-varying float vBrightness;
-varying float vSpecular;
-
-uniform mat4 matrix;
-uniform mat4 normalMatrix;
-
-void main(){
-    vec3 worldNormal = normalize((normalMatrix * vec4(normal, 0.0)).xyz);
-    vec3 lightDir = normalize(lightDirection); // Direction of light
-    vec3 viewDir = normalize(viewDirection); // Direction from surface to view (camera)
-    vec3 halfDir = normalize(lightDir + viewDir); // Halfway vector for specular lighting
-    
-    // Diffuse lighting
-    float diffuse = max(0.0, dot(worldNormal, lightDir));
-    
-    // Specular lighting (Phong)
-    float specular = pow(max(0.0, dot(worldNormal, halfDir)), 64.0); // 16 is the shininess factor
-
-    // Combine ambient, diffuse, and specular components
-    vBrightness = ambient + diffuse;
-    vSpecular = specular;
-
-    vColor = color * vBrightness;
-
-    gl_Position = matrix * vec4(position, 1.0);
-}
+    precision mediump float;
+    const vec3 lightDirection = normalize(vec3(1.0, 1.0, 1.0));
+    const float ambient = 0.2;
+    attribute vec3 position;
+    attribute vec3 normal;
+    attribute vec3 color;
+    varying vec3 vColor;
+    varying float vBrightness;
+    uniform mat4 matrix;
+    uniform mat4 normalMatrix;
+    void main(){
+        vec3 worldNormal = (normalMatrix * vec4(normal, 1)).xyz;
+        float diffuse = max(0.0, dot(worldNormal, lightDirection));
+        vBrightness = ambient + diffuse;
+        vColor = color*vBrightness;
+        gl_Position = matrix * vec4(position, 1);
+    }
     `);
     gl.compileShader(vertexShader);
 
     const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
     gl.shaderSource(fragmentShader,`
-precision mediump float;
+    precision mediump float;
 
-varying float vBrightness;
-varying vec3 vColor;
-varying float vSpecular;
+    varying float vBrightness;
+    varying vec3 vColor;
 
-void main() {
-    // Combine the diffuse (color) and specular terms smoothly
-    vec4 finalColor = vec4(vColor * vBrightness + vSpecular, 1.0);
-    gl_FragColor = finalColor;
-}
+    void main(){
+        gl_FragColor = vec4(vColor, 1.0);
+    }
     `);
     gl.compileShader(fragmentShader);
 
