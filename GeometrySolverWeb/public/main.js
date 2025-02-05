@@ -1005,8 +1005,14 @@ function cylinderPV(a,b)
 
 function truncConePV(a,b,h)
 {
-    P += Math.PI*(b*b+a*a+b*Math.sqrt((a-b)*(a-b)+h*h));
+    P += Math.PI*(a+b)*Math.sqrt((a-b)*(a-b)+h*h) + Math.PI*b*b + Math.PI*a*a;
     V += (1/3)*Math.PI*h*(b*b+a*b+a*a);
+}
+
+function roundToDecimalPlace(num, decimalPlaces)
+{
+    const factor = Math.pow(10, decimalPlaces);
+    return Math.round(num * factor) / factor;
 }
 
 async function renderModel(projectID)
@@ -1057,6 +1063,8 @@ async function renderModel(projectID)
             clearPoprecni();
             
             //sum of surface and volumes is shown
+            P = roundToDecimalPlace(P, 4);
+            V = roundToDecimalPlace(V, 4);
             document.getElementById("PV").innerHTML = `P: ${P} V: ${V}`;
 
             cam_height = cam_height/2;
