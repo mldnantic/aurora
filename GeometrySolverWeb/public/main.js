@@ -755,7 +755,7 @@ function figureInput(body)
     range.value=192;
     figureInput.appendChild(range);
     
-    let pvLbl = document.createElement("label");
+    let pvLbl = document.createElement("h2");
     pvLbl.id = "PV";
     pvLbl.innerHTML = `P: ${P} V: ${V}`;
     figureInput.appendChild(pvLbl);
