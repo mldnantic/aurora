@@ -131,7 +131,7 @@ button
 {
     display: flex;
     flex-direction: row;
-    min-height: 33%;
+    min-height: 50%;
     /* max-height: 66%; */
     /* margin: 5%; */
     /* margin-top: 0%; */
@@ -207,8 +207,7 @@ button
 {
     display: flex;
     flex-direction: column-reverse;
-    height: 20%;
-    /* min-height: 33%; */
+    min-height: 33%;
     /* max-height: 50%; */
     background-color: rgb(90, 90, 95);
     /* margin: 5%; */
