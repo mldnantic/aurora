@@ -53,7 +53,7 @@ canvas
     justify-content:flex-start;
     /* align-self: center; */
     background-color: #9cecff;
-    object-fit: contain;
+    object-fit: fill;
 }
 
 textarea
