@@ -160,10 +160,12 @@ socket.on("comment",comment=>{
 });
 
 socket.on("figureAdded",body=>{
+    length++;
     renderModel(body.bodyID);
 });
 
 socket.on("figureDeleted", bodyID=>{
+    length--;
     if(length==0)
     {
         drawGrid(false);
@@ -840,7 +842,6 @@ function figureInput(body)
                         })
                         .then(response => response.json())
                         .then(data => {
-                                length = data.length;
                                 renderModel(bodyID);
                                 socket.emit("figureAdded",telo);
                             })
@@ -880,7 +881,6 @@ function figureInput(body)
                             })
                             .then(response => response.json())
                             .then(data => {
-                                    length = data.length;
                                     renderModel(bodyID);
                                     socket.emit("figureDeleted",bodyID);
                                 })
