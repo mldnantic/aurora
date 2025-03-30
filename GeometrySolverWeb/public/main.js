@@ -322,7 +322,6 @@ function goBackAction()
 {
     if(bodyID!="")
     {
-        removeWatcher();
         bodyID="";
         length=0;
         remove("figureInput");
