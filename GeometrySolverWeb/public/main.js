@@ -344,20 +344,6 @@ async function logOffAction()
 {
     if(bodyID!="")
     {
-        let watcher = 
-        {
-            id: bodyID,
-            userID: userID
-        }
-        await fetch("/deleteWatcher", {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(watcher),
-        })
-        .then(response => response.json())
-        .then(data => {
             userID = "";
             userName = "";
             bodyID = "";
@@ -371,10 +357,6 @@ async function logOffAction()
             toggleCommenting();
             registerLoginForm();
             drawGrid(false);
-        })
-        .catch(error => {
-            console.error("Error registering user:", error);
-        });
     }
     else
     {
@@ -413,42 +395,6 @@ function resetNotification()
     notification.style.backgroundColor = "rgb(90, 90, 95)";
     notification.innerHTML = "";
 }
-
-async function removeWatcher()
-{
-    if(bodyID!="")
-    {
-        let watcher = 
-        {
-            id: bodyID,
-            userID: userID
-        }
-        await fetch("/deleteWatcher", {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(watcher),
-        })
-        .then(response => response.json())
-        .then(data => {
-        })
-        .catch(error => {
-            console.error("Error registering user:", error);
-        });
-    }
-}
-
-function showADialog(e)
-{
-    var confirmationMessage = `uklonjen watcher`;
-    return confirmationMessage;
-}
-
-window.addEventListener("beforeunload", function (e) {
-    removeWatcher();
-    return showADialog(e);  
-});
 
 async function modelCreateAndSelect()
 {
@@ -501,26 +447,8 @@ async function modelCreateAndSelect()
                                 }
                             )
                             toggleCommenting();
-                            let BodySent = {
-                                user: userID,
-                                body: bodyID
-                            };
-                            
-                            await fetch(`/addWatcher`, {
-                                method: "PUT",
-                                headers: {
-                                    "Content-Type": "application/json",
-                                },
-                                body: JSON.stringify(BodySent),
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                    remove("bodiesSelect");
-                                    remove("newProjectDiv");
-                                })
-                            .catch(error => {
-                                console.error('Error fetching data:', error);
-                            });
+                            remove("bodiesSelect");
+                            remove("newProjectDiv");
                         };
                         selectModel.appendChild(bodyOption);
                 })
@@ -564,23 +492,6 @@ async function modelCreateAndSelect()
             .then(data => {
 
                 bodyID = data._id;
-
-                let BodySent = {
-                    user: userID,
-                    body: data._id
-                };
-
-                fetch(`/addWatcher`, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(BodySent),
-                })
-                .then(response => response.json())
-                .catch(error => {
-                    console.error('Error fetching data:', error);
-                });
 
                 remove("bodiesSelect");
                 remove("newProjectDiv");
@@ -818,40 +729,29 @@ function figureInput(body)
                 bodyID:bodyID
             }
 
-            await fetch(`/getWriteUser?id=${bodyID}`)
-            .then(response=>response.json())
-            .then(data=>{
-                if(data.userID != userID)
-                {
-                    warningNotification("You don't have write privileges");
-                }
-                else
-                {
-                    if(length==8)
-                    {
-                        warningNotification("You can't add more than 8 figures to the body");
-                    }
-                    else
-                    {
-                        fetch(`/addFigure?id=${bodyID}`, {
-                            method: "PUT",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify(newFigure),
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                                renderModel(bodyID);
-                                socket.emit("figureAdded",telo);
-                            })
-                        .catch(error => {
-                            console.error('Error fetching data:', error);
-                        });
-                    }
-                }
-            })
-    };
+            if(length==8)
+            {
+                warningNotification("You can't add more than 8 figures to the body");
+            }
+            else
+            {
+                fetch(`/addFigure?id=${bodyID}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(newFigure),
+                })
+                .then(response => response.json())
+                .then(data => {
+                        renderModel(bodyID);
+                        socket.emit("figureAdded",telo);
+                    })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+            }
+        };
 
     divTmp.appendChild(btnAddFigure);
 
@@ -859,49 +759,38 @@ function figureInput(body)
     btnDeleteTopFigure.innerHTML = "Delete top figure";
     btnDeleteTopFigure.onclick = async (ev) => {
 
-        await fetch(`/getWriteUser?id=${bodyID}`)
-        .then(response=>response.json())
-        .then(data=>{
-            if(data.userID != userID)
-            {
-                warningNotification("You don't have delete privileges");
-            }
-            else
-            {
-                if(length==0)
-                {
-                    warningNotification("You have no figure to delete");
+        if(length==0)
+        {
+            warningNotification("You have no figure to delete");
+        }
+        else
+        {
+            fetch(`/deleteTopFigure?id=${bodyID}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
                 }
-                else
-                {
-                    fetch(`/deleteTopFigure?id=${bodyID}`, {
-                        method: "PUT",
-                        headers: {
-                            "Content-Type": "application/json",
-                        }
-                    })
-                        .then(response=>response.json())
-                        .then(data=>{
-                                    fetch(`/getBody?id=${bodyID}`, {
-                                        method: "GET",
-                                        headers: {
-                                            "Content-Type": "application/json",
-                                        }
-                                    })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                            renderModel(bodyID);
-                                            socket.emit("figureDeleted",bodyID);
-                                        })
-                                    .catch(error => {
-                                        console.error('Error fetching data:', error);
-                                    });
+            })
+                .then(response=>response.json())
+                .then(data=>{
+                            fetch(`/getBody?id=${bodyID}`, {
+                                method: "GET",
+                                headers: {
+                                    "Content-Type": "application/json",
                                 }
-                            )
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                    renderModel(bodyID);
+                                    socket.emit("figureDeleted",bodyID);
+                                })
+                            .catch(error => {
+                                console.error('Error fetching data:', error);
+                            });
                         }
-                    }
-        });
-    }
+                    )
+                }
+            };
 
     divTmp.appendChild(btnDeleteTopFigure);
 

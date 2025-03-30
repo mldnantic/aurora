@@ -97,17 +97,6 @@ app.get('/getBody', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-//pesimistic lock, preuredi da bude optimistic lock
-app.get("/getWriteUser", async (req, res) => {
-  try {
-    const id = req.query.id;
-    const body = await BodyRepository.getWriteUser(id);
-    res.json(body);
-  } catch (error) {
-    console.error('Error fetching bodies:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
 
 app.post("/createBody", async(req,res)=>{
   try{
@@ -196,31 +185,5 @@ app.put("/deleteTopFigure", async(req,res)=>{
     res.status(500).json({error: 'Internal Server Error'});
   }
 })
-
-app.put("/addWatcher", async(req,res)=>{
-  try{
-    const watcher =
-    {
-      userID: req.body.user
-    }
-    await BodyRepository.addWatcher(req.body.body,watcher);
-    res.json(watcher);
-  }
-  catch (error) {
-    console.error('Error adding watcher:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-app.delete("/deleteWatcher", async (req, res) => {
-  try {
-    const result = await BodyRepository.removeWatcher(req.body.userID, req.body.id);
-
-    res.json(result);
-  } catch (error) {
-    console.error('Error deleting body:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
 
 server.listen(port, () => console.log(`Server running on port ${port}`));

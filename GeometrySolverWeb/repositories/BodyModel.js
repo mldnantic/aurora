@@ -19,11 +19,6 @@ const bodySchema = new mongoose.Schema({
       time:String,
       content:String
     }]
-  },
-  watchers:{
-    type:[{
-      userID:String
-    }]
   }
 },{ versionKey: false });
 const bodyModel = mongoose.model("body", bodySchema);

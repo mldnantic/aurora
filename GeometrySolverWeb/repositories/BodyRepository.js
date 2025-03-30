@@ -42,47 +42,6 @@ class BodyRepository
     }
   }
 
-  async addWatcher(id, watcher)
-  {
-    try
-    {
-      const filter = {_id: id};
-      const update = { $push: { watchers: watcher } };
-      const result = await BodyModel.updateOne(filter, update);
-
-      if(result.modifiedCount === 1)
-        {
-          return watcher;
-        }
-        else
-        {
-          console.log("nothing happened...");
-        }
-    }
-    catch(error)
-    {
-      throw error;
-    }
-  }
-
-  async removeWatcher(userID, id)
-  {
-    try
-    {
-      const result = await BodyModel.findByIdAndUpdate(id, { $pull: { watchers: { userID: userID } } } );
-
-      if(!result)
-        {
-          throw new Error('User not found');
-        }
-      return { success: true, message: 'Watcher removed from list' };
-    }
-    catch(error)
-    {
-      throw error;
-    }
-  }
-
   async addFigure(id, figure)
   {
     try
@@ -139,19 +98,6 @@ class BodyRepository
     {
       const body = await BodyModel.findById(id);
       return body;
-    }
-    catch(error)
-    {
-      throw error;
-    }
-  }
-
-  async getWriteUser(id)
-  {
-    try
-    {
-      const body = await BodyModel.findById(id);
-      return body.watchers[0];
     }
     catch(error)
     {
