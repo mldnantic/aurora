@@ -859,37 +859,48 @@ function figureInput(body)
     btnDeleteTopFigure.innerHTML = "Delete top figure";
     btnDeleteTopFigure.onclick = async (ev) => {
 
-        if(length==0)
-        {
-            warningNotification("You have no figure to delete");
-        }
-        else
-        {
-            await fetch(`/deleteTopFigure?id=${bodyID}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
+        await fetch(`/getWriteUser?id=${bodyID}`)
+        .then(response=>response.json())
+        .then(data=>{
+            if(data.userID != userID)
+            {
+                warningNotification("You don't have delete privileges");
+            }
+            else
+            {
+                if(length==0)
+                {
+                    warningNotification("You have no figure to delete");
                 }
-            })
-                .then(response=>response.json())
-                .then(data=>{
-                            fetch(`/getBody?id=${bodyID}`, {
-                                method: "GET",
-                                headers: {
-                                    "Content-Type": "application/json",
-                                }
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                    renderModel(bodyID);
-                                    socket.emit("figureDeleted",bodyID);
-                                })
-                            .catch(error => {
-                                console.error('Error fetching data:', error);
-                            });
+                else
+                {
+                    fetch(`/deleteTopFigure?id=${bodyID}`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
                         }
-                    )
-        }
+                    })
+                        .then(response=>response.json())
+                        .then(data=>{
+                                    fetch(`/getBody?id=${bodyID}`, {
+                                        method: "GET",
+                                        headers: {
+                                            "Content-Type": "application/json",
+                                        }
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                            renderModel(bodyID);
+                                            socket.emit("figureDeleted",bodyID);
+                                        })
+                                    .catch(error => {
+                                        console.error('Error fetching data:', error);
+                                    });
+                                }
+                            )
+                        }
+                    }
+        });
     }
 
     divTmp.appendChild(btnDeleteTopFigure);
