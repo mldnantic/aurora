@@ -37,7 +37,6 @@ let canvas = document.createElement("canvas");
 canvas.id = "platno3D";
 glavniDiv.appendChild(canvas);
 
-
 drawPoprecni();
 
 clearPoprecni();
@@ -49,8 +48,8 @@ glavniDiv.appendChild(menu);
 registerLoginForm();
 commentSection();
 
-let height = canvas.offsetHeight*window.devicePixelRatio;
-let width = canvas.offsetWidth*window.devicePixelRatio;
+let height = Math.round(canvas.clientHeight * devicePixelRatio);
+let width = Math.round(canvas.clientWidth * devicePixelRatio);
 canvas.width = width;
 canvas.height = height;
 
@@ -60,6 +59,36 @@ var gl = canvas.getContext('webgl');
 if(!gl)
 {
     throw new Error("WEBGL NOT SUPPORTED");
+}
+
+const resizeObserver = new ResizeObserver(onResize);
+resizeObserver.observe(canvas, {box: 'content-box'});
+
+const canvasToDisplaySizeMap = new Map([[canvas, [width, height]]]);
+ 
+function onResize(entries) {
+  for (const entry of entries) {
+    let width;
+    let height;
+    if (entry.devicePixelContentBoxSize) {
+      width = entry.devicePixelContentBoxSize[0].inlineSize;
+      height = entry.devicePixelContentBoxSize[0].blockSize;
+    } else if (entry.contentBoxSize) {
+      if (entry.contentBoxSize[0]) {
+        width = entry.contentBoxSize[0].inlineSize;
+        height = entry.contentBoxSize[0].blockSize;
+      } else {
+        width = entry.contentBoxSize.inlineSize;
+        height = entry.contentBoxSize.blockSize;
+      }
+    } else {
+      width = entry.contentRect.width;
+      height = entry.contentRect.height;
+    }
+    const displayWidth = Math.round(width * devicePixelRatio);
+    const displayHeight = Math.round(height * devicePixelRatio);
+    canvasToDisplaySizeMap.set(entry.target, [displayWidth, displayHeight]);
+  }
 }
 
 canvas.addEventListener('mousedown', (event) => {
@@ -118,22 +147,19 @@ canvas.addEventListener('wheel', (event) => {
     }
 });
 
-// window.addEventListener("resize", function(e)
-// {
-//     canvasResize()
-// })
-
-// function canvasResize()
-// {
-//     canvas = document.querySelector("canvas");
-//     gl = canvas.getContext('webgl');
-    
-//     document.getElementById("header").innerHTML= `Rezolucija prikaza je ${window.innerWidth}x${window.innerHeight}`;
-//     if(!gl)
-//     {
-//         throw new Error("WEBGL NOT SUPPORTED");
-//     }
-// }
+function resizeCanvasToDisplaySize(canvas) {
+    const [displayWidth, displayHeight] = canvasToDisplaySizeMap.get(canvas);
+   
+    const needResize = canvas.width  !== displayWidth ||
+                       canvas.height !== displayHeight;
+   
+    if (needResize) {
+      canvas.width  = displayWidth;
+      canvas.height = displayHeight;
+    }
+   
+    return needResize;
+  }
 
 //unloadovanje struktura za matrice jer drugacije ne radi
 const { mat2, mat2d, mat3, mat4, quat, quat2, vec2, vec3, vec4 } = glMatrix;

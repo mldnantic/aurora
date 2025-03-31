@@ -24,7 +24,7 @@ function clearPoprecni()
     let factorWidth = platno2D.width / density;
     let factorHeight = platno2D.height / density;
 
-    for (i = 0; i < density; i++)
+    for (i = 0; i < density-1; i++)
     {
         ctx.beginPath();
         ctx.moveTo(platno2D.width/density+factorWidth*i,platno2D.height/density);

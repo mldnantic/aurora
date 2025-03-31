@@ -65,6 +65,10 @@ function webgl(glDrawMode, animacija, height, distance, cullDirection, rotateY, 
         throw new Error (`Could not compile WebGL program. \n\n${info}`);
     }
 
+    resizeCanvasToDisplaySize(canvas);
+
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+
     const positionLocation = gl.getAttribLocation(program, `position`);
     gl.enableVertexAttribArray(positionLocation);
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
