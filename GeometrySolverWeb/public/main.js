@@ -48,13 +48,13 @@ glavniDiv.appendChild(menu);
 registerLoginForm();
 commentSection();
 
-let height = Math.round(canvas.clientHeight * devicePixelRatio);
-let width = Math.round(canvas.clientWidth * devicePixelRatio);
+let height = canvas.clientHeight;
+let width = canvas.clientWidth;
 canvas.width = width;
 canvas.height = height;
 
 canvas = document.querySelector("canvas");
-var gl = canvas.getContext('webgl');
+var gl = canvas.getContext("webgl", { antialias: false });
 
 if(!gl)
 {
@@ -85,10 +85,24 @@ function onResize(entries) {
       width = entry.contentRect.width;
       height = entry.contentRect.height;
     }
-    const displayWidth = Math.round(width * devicePixelRatio);
-    const displayHeight = Math.round(height * devicePixelRatio);
+    const displayWidth = Math.round(width);
+    const displayHeight = Math.round(height);
     canvasToDisplaySizeMap.set(entry.target, [displayWidth, displayHeight]);
   }
+}
+
+function resizeCanvasToDisplaySize(canvas) {
+    const [displayWidth, displayHeight] = canvasToDisplaySizeMap.get(canvas);
+   
+    const needResize = canvas.width  !== displayWidth ||
+                       canvas.height !== displayHeight;
+   
+    if (needResize) {
+      canvas.width  = displayWidth;
+      canvas.height = displayHeight;
+    }
+   
+    return needResize;
 }
 
 canvas.addEventListener('mousedown', (event) => {
@@ -146,20 +160,6 @@ canvas.addEventListener('wheel', (event) => {
         }
     }
 });
-
-function resizeCanvasToDisplaySize(canvas) {
-    const [displayWidth, displayHeight] = canvasToDisplaySizeMap.get(canvas);
-   
-    const needResize = canvas.width  !== displayWidth ||
-                       canvas.height !== displayHeight;
-   
-    if (needResize) {
-      canvas.width  = displayWidth;
-      canvas.height = displayHeight;
-    }
-   
-    return needResize;
-  }
 
 //unloadovanje struktura za matrice jer drugacije ne radi
 const { mat2, mat2d, mat3, mat4, quat, quat2, vec2, vec3, vec4 } = glMatrix;
