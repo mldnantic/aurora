@@ -31,7 +31,7 @@ io.on("connection", socket =>{
   })
 
   socket.on("comment",(comment)=>{
-    io.to(comment.bodyID).emit("comment",`${comment.user} ${moment().format('LT')} ${comment.content}`);
+    io.to(comment.bodyID).emit("comment",`${comment.user} ${moment().format('l') + " " + moment().format('LT')} ${comment.content}`);
   })
 
   socket.on("figureAdded",(body)=>{
@@ -142,7 +142,7 @@ app.put("/addComment", async(req,res)=>{
   try{
     const comment = {
       user: req.body.user,
-      time: moment().format('LT'),
+      time: moment().format('l') + " " + moment().format('LT'),
       content: req.body.content
     }
     const cmt = await BodyRepository.addComment(req.body.id,comment);
