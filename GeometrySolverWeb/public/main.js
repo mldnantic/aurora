@@ -170,8 +170,6 @@ var colorData = [];
 
 var normalData = [];
 
-drawGrid(false);
-
 socket.on("message", message =>{
     let notification = document.getElementById("notification");
     notification.style.backgroundColor = "rgb(20, 150, 20)";
